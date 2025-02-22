@@ -234,12 +234,51 @@ df7 <- df6 |>
     values_to = "time"
   )
 
-### Crear un df8 revierta el pivot_longer, es decir,
-### hacer un pivot_wider()
-
 df8 <- df7 |> 
   pivot_wider(names_from = app,
               values_from = time)
+
+
+
+# Tema 04: Outliers ----
+
+## De horas a número
+df7$time |> class()
+strsplit("03:45:00", split = ":")
+
+## Transformación
+df7$time <- sapply(
+  strsplit(df7$time, split = ":"),
+  function(x) {
+    x <- as.numeric(x)
+    x[1] + x[2]/60 + x[3]/60^2
+  }
+)
+
+df7$time
+
+
+## Detección gráfica
+
+# Boxplot feo
+boxplot(df7$time)
+
+# Boxplot bonito :)
+install.packages("plotly")
+library(plotly)
+
+ggplotly(
+  df7 |> 
+    ggplot(aes(x = app, y = time, fill = app)) +
+    geom_boxplot() +
+    theme_minimal() +
+    labs(x = "", y = "Promedio de horas a la semana") +
+    theme(legend.position = "none")
+)
+
+
+## Tarea: Añadir al boxplot la variable edad y sexo
+
 
 
 
