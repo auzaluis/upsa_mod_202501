@@ -25,7 +25,7 @@ ncol(df) # cantidad de columnas
 
 
 
-# Temas 02: Transformación de datos ----
+# Tema 02: Transformación de datos ----
 
 ## Valores perdidos (NA) ----
 # Los NAs pueden ser tratados de 2 maneras
@@ -124,10 +124,122 @@ ifelse(
 
 # Bucles (loops)
 
+## Paso 1: Crear un vector que contenga los nombres
+## de las columnas que quiero trabajar
+
+# df4[,9:32] |> colnames()
+frases <- df4 |> select(starts_with("Según tu forma de ser")) |> colnames()
+
+## Paso 2: Ejecutar el buble
+df5 <- df4
+
+for (frase in frases) {
+  df5[,frase] <- ifelse(
+    test = df4[,frase] == "Un poco verdadero" | df4[,frase] == "Totalmente verdadero",
+    yes = 1,
+    no = 0
+  )
+}
 
 
+# Tema 03: Manipulación de datos ----
+
+# Convertir el data frame en un tibble
+df5 <- df5 |> as_tibble()
+
+## Selección de columnas ----
+df5 |> select(Sexo)
+df5 |> select(Sexo, `Escribe tu edad exacta`)
+df5 |> select(`Marca temporal`:Sexo)
+df5 |> select(-`Marca temporal`)
+df5 |> select(starts_with("edad"))
+df5 |> select(contains("edad"))
+df5 |> select(ends_with("00"))
+
+## Filtrado de filas ----
+df5 |> select(Sexo) |> filter(Sexo == "Mujer")
+df5 |> select(Sexo) |> filter(Sexo != "Mujer")
+
+df5 |>
+  select(Sexo, `Escribe tu edad exacta`) |>
+  filter(`Escribe tu edad exacta` > 21)
+
+df5 |>
+  select(Sexo, `Escribe tu edad exacta`) |>
+  filter(`Escribe tu edad exacta` <= 21)
+
+df5 |> 
+  select(Sexo, `Escribe tu edad exacta`) |>
+  filter(`Escribe tu edad exacta` >= 18 & `Escribe tu edad exacta` <= 21)
+
+df5 |> 
+  select(Sexo, `Escribe tu edad exacta`) |>
+  filter(`Escribe tu edad exacta` >= 18,
+         `Escribe tu edad exacta` <= 21)
+
+df5 |> 
+  select(Sexo, `Escribe tu edad exacta`) |>
+  filter(between(`Escribe tu edad exacta`, 18, 21))
+
+df5 |> 
+  select(Sexo, `Escribe tu edad exacta`) |>
+  filter(`Escribe tu edad exacta` %in% 18:21)
+
+df5 |> 
+  select(Sexo, `Escribe tu edad exacta`) |>
+  filter(`Escribe tu edad exacta` %in% 18:21,
+         Sexo == "Mujer")
 
 
+## Nombres de columnas
+
+### Apps
+
+df6 <- df5
+
+#### Paso 1: Crear un vector con los nuevos nombres
+apps <- c("TikTok", "Instagram", "Facebook", "YouTube")
+
+#### Paso 2: Reemplazo
+colnames(df6)[34:37] <- apps
+colnames(df6)
+
+
+### Frases
+
+#### Paso 1: Crear un vector con los nuevos nombres
+
+frases2 <- frases |> 
+  as_tibble() |> 
+  separate(col = value,
+           into = c("value", "frases"),
+           sep = "\\[") |> 
+  separate(col = frases,
+           into = c("frases", "jaja"),
+           sep = "\\]") |> 
+  select(frases) |> 
+  as_vector()
+
+### Paso 2: Reemplazo
+colnames(df6)[9:32] <- frases2
+
+
+## Pivot
+
+### Longer
+df7 <- df6 |> 
+  pivot_longer(
+    cols = all_of(apps),
+    names_to = "app",
+    values_to = "time"
+  )
+
+### Crear un df8 revierta el pivot_longer, es decir,
+### hacer un pivot_wider()
+
+df8 <- df7 |> 
+  pivot_wider(names_from = app,
+              values_from = time)
 
 
 
