@@ -258,7 +258,7 @@ df7$time <- sapply(
 df7$time
 
 
-## Detección gráfica
+## Detección gráfica ----
 
 # Boxplot feo
 boxplot(df7$time)
@@ -279,13 +279,49 @@ ggplotly(
 
 ## Tarea: Añadir al boxplot la variable edad y sexo
 
+ggplotly(
+  df7 |> 
+    ggplot(aes(x = Sexo, y = time, fill = app)) +
+    geom_boxplot() +
+    theme_minimal() +
+    labs(x = "", y = "Promedio de horas a la semana") +
+    facet_grid(. ~ app) +
+    theme(
+      legend.position = "none",
+      panel.grid.major.x = element_blank()
+    )
+)
 
 
 
+## Reemplazo/imputación por la media ----
 
+df9 <- df7 |> 
+  mutate(
+    outlier = case_when(
+      app == "Facebook"  & time > 10    ~ 1,
+      app == "Instagram" & time > 12    ~ 1,
+      app == "TikTok"    & time > 18.27 ~ 1,
+      app == "YouTube"   & time > 9     ~ 1,
+      .default = 0
+    )
+  ) |> 
+  group_by(app) |> 
+  mutate(
+    time2 = ifelse(
+      test = outlier == 1,
+      yes  = mean(time),
+      no   = time
+    )
+  ) |> 
+  ungroup()
 
+# tareita: dibujar con ggplot histograma de time y time2
 
-
+df9 |> 
+  ggplot(aes(y = time2, x = app)) +
+  geom_boxplot() +
+  theme_minimal()
 
 
 
