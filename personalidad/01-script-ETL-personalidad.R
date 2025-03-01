@@ -316,7 +316,6 @@ df9 <- df7 |>
   ) |> 
   ungroup()
 
-# tareita: dibujar con ggplot histograma de time y time2
 
 df9 |> 
   ggplot(aes(y = time2, x = app)) +
@@ -325,13 +324,44 @@ df9 |>
 
 
 
+# Tema 05: Aggregations ----
+
+## Tablas de frecuencias ----
+
+### Una variable
+
+# Sin agrupar
+
+df9 |> 
+  count(Sexo, edadGR) |> 
+  mutate(
+    total = sum(n),
+    prop = n/total,
+    porcentaje = scales::percent(prop)
+  ) |> 
+  arrange(desc(Sexo))
 
 
+# Agrupando
+
+df9 |> 
+  group_by(Sexo) |> 
+  count(edadGR) |> 
+  mutate(
+    total = sum(n),
+    prop = n/total,
+    porcentaje = scales::percent(prop)
+  ) |> 
+  ungroup() |> 
+  arrange(desc(Sexo))
 
 
+## Tablas con aggreagations ----
 
-
-
-
-
-
+df9 |> 
+  group_by(app, Sexo, edadGR) |> 
+  summarise(
+    promedio = mean(time)
+  ) |> 
+  ungroup() |> 
+  print(n=24)
