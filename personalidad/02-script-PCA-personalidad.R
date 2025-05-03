@@ -97,6 +97,7 @@ df10 <- df6 |>
     introversion = PCA$introversion$ind$coord *-1
   )
 
+dimensiones <- df10 |> select(materialismo:introversion) |> colnames()
 
 
 
