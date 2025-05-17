@@ -71,5 +71,102 @@ df13 <- df11 |>
 
 
 
+# Análisis de los segmentos
+
+## Rasgos de personalidad
+
+df13 |> 
+  group_by(segmento) |> 
+  summarise(
+    materialismo = mean(materialismo),
+    tradicion    = mean(tradicion),
+    exito        = mean(exito),
+    resp_social  = mean(resp_social),
+    social       = mean(social),
+    introversion = mean(introversion),
+    
+    TikTok    = mean(TikTok),
+    Instagram = mean(Instagram),
+    Facebook  = mean(Facebook),
+    YouTube   = mean(YouTube)
+  )
 
 
+## Mapa perceptual
+
+df14 <- 
+  
+  df13 |> 
+  
+  select(
+    segmento,
+    
+    materialismo,
+    tradicion,
+    exito,
+    resp_social,
+    social,
+    introversion,
+    
+    TikTok,
+    Instagram,
+    Facebook,
+    YouTube
+  ) |> 
+  
+  mutate_at(
+    .vars = c(
+      "materialismo",
+      "tradicion",
+      "exito",
+      "resp_social",
+      "social",
+      "introversion",
+      "TikTok",
+      "Instagram",
+      "Facebook",
+      "YouTube"
+    ),
+    .funs = rescale
+  )
+
+
+df15 <-
+  df14 |> 
+  group_by(segmento) |> 
+  summarise(
+    materialismo = mean(materialismo),
+    tradicion    = mean(tradicion),
+    exito        = mean(exito),
+    resp_social  = mean(resp_social),
+    social       = mean(social),
+    introversion = mean(introversion),
+    
+    TikTok    = mean(TikTok),
+    Instagram = mean(Instagram),
+    Facebook  = mean(Facebook),
+    YouTube   = mean(YouTube)
+  ) |> 
+  column_to_rownames("segmento")
+
+
+## Análisis de correspondencias
+FactoMineR::CA(df15)
+
+
+
+
+
+
+
+
+
+
+  
+  
+  
+  
+  
+  
+  
+  
