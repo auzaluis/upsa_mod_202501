@@ -147,6 +147,7 @@ df15 <-
     Facebook  = mean(Facebook),
     YouTube   = mean(YouTube)
   ) |> 
+  filter(segmento != 6) |> 
   column_to_rownames("segmento")
 
 
