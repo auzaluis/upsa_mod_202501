@@ -34,3 +34,83 @@ list_to_basket <- as(
 )
 
 class(list_to_basket)
+
+
+# Análisis descriptivo
+
+itemFrequencyPlot(
+  x = list_to_basket,
+  topN = 20,
+  horiz = T
+)
+
+# Reglas ----
+
+rules <- apriori(
+  data = list_to_basket,
+  parameter = list(
+    supp = 0.0001,
+    conf = 0.15,
+    minlen = 2,
+    maxlen = 2
+  )
+)
+
+
+inspect(rules)
+
+
+plot(
+  rules,
+  method = "graph",
+  engine = "htmlwidget"
+)
+
+
+# Fijar la mano derecha
+
+rules_rhs <- apriori(
+  data = list_to_basket,
+  parameter = list(
+    supp = 0.001,
+    conf = 0.07,
+    minlen = 2,
+    maxlen = 2
+  ),
+  appearance = list(
+    rhs = "sausage",
+    default = "lhs"
+  )
+)
+
+
+inspect(rules_rhs)
+
+# Fijar la mano izquierda
+
+rules_lhs <- apriori(
+  data = list_to_basket,
+  parameter = list(
+    supp = 0.001,
+    conf = 0.05,
+    minlen = 2,
+    maxlen = 3
+  ),
+  appearance = list(
+    lhs = "whole milk",
+    default = "rhs"
+  )
+)
+
+inspect(rules_lhs)
+
+
+
+
+
+
+
+
+
+
+
